@@ -1,0 +1,6 @@
+serverless-var.yml
+serverless-*-var.yml
+node_modules
+
+.webpack
+.serverless

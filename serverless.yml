@@ -1,0 +1,86 @@
+# NOTE: update this with your service name
+service: serverless-monitoring
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-pseudo-parameters
+  - serverless-iam-roles-per-function
+
+# serverless-webpack configuration
+# Enable auto-packing of external modules
+custom:
+  defaultStage: dev
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, self:custom.defaultStage}  
+  region: ap-southeast-2
+  environment: 
+    LOG_LEVEL: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.LOG_LEVEL}
+
+functions:
+  # sendAlarm:
+  #   handler: src/functions/sendAlarm/index.handler
+  #   environment: 
+  #     FROM: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.FROM}
+  #     ALERT_ADDRESS: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.ALERT_ADDRESS}
+  #     MAILGUN_API_URL: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.MAILGUN_API_URL}
+  #     MAILGUN_API_KEY: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.MAILGUN_API_KEY}
+  #   iamRoleStatementsName: ${self:service}-${self:provider.stage}-send-alarm-lambda-role
+  #   iamRoleStatements:
+  #     - Effect: Allow
+  #       Action:
+  #         - logs:FilterLogEvents
+  #         - logs:DescribeMetricFilters
+  #       Resource: "*"
+
+  shipLog:
+    handler: src/functions/shipLog/index.handler
+    environment: 
+      DATA_DOG_API_KEY: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.DATA_DOG_API_KEY}
+      DATA_DOG_HOST: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.DATA_DOG_HOST}
+      DATA_DOG_PORT: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.DATA_DOG_PORT}
+      
+  configLogGroup:
+    handler: src/functions/configLogGroup/index.handler
+    iamRoleStatementsName: ${self:service}-${self:provider.stage}-config-loggroup-lambda-role
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - logs:PutRetentionPolicy
+          - logs:PutMetricFilter
+          - cloudwatch:PutMetricAlarm
+        Resource: "*"
+    environment:
+      RETENTION_DAYS: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.RETENTION_DAYS}
+      ALARM_SNS_TOPIC: ${file(serverless-${self:provider.stage}-var.yml):${self:provider.stage}.environment.ALARM_SNS_TOPIC}
+    events:
+      - cloudwatchEvent:
+        event:
+          source:
+            - "aws.logs"
+          detail-type:
+            - AWS API Call via CloudTrail
+          detail:
+            eventSource:
+              - logs.amazonaws.com
+            eventName:
+              - CreateLogGroup
+            
+resources:
+  Resources:
+    LambdaInvokePermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName:
+          Fn::Join:
+            - ""
+            - - "Ref" : "ShipLogLambdaFunction"
+        Principal: logs.#{AWS::Region}.amazonaws.com

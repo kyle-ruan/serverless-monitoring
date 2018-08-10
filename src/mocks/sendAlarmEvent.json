@@ -1,0 +1,28 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn":
+        "arn:aws:sns:ap-southeast-2:371488795685:file-management-alarm-notification:96599c3e-2110-40bd-b707-359df18e169e",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "1d70bb2e-3908-5572-8569-e8abaa8aa831",
+        "TopicArn":
+          "arn:aws:sns:ap-southeast-2:371488795685:file-management-alarm-notification",
+        "Subject": "ALARM: \"FileError\" in Asia Pacific (Sydney)",
+        "Message":
+          "{\"AlarmName\":\"FileError\",\"AlarmDescription\":\"File Error Alarm\",\"AWSAccountId\":\"371488795685\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 1 out of the last 1 datapoints [1.0 (28/05/18 05:13:00)] was greater than or equal to the threshold (1.0) (minimum 1 datapoint for OK -> ALARM transition).\",\"StateChangeTime\":\"2018-05-28T05:18:58.466+0000\",\"Region\":\"Asia Pacific (Sydney)\",\"OldStateValue\":\"INSUFFICIENT_DATA\",\"Trigger\":{\"MetricName\":\"FileError\",\"Namespace\":\"FileManagement\",\"StatisticType\":\"Statistic\",\"Statistic\":\"SUM\",\"Unit\":null,\"Dimensions\":[],\"Period\":300,\"EvaluationPeriods\":1,\"ComparisonOperator\":\"GreaterThanOrEqualToThreshold\",\"Threshold\":1.0,\"TreatMissingData\":\"\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+        "Timestamp": "2018-05-28T05:18:58.503Z",
+        "SignatureVersion": "1",
+        "Signature":
+          "UE5snqBDf1bvGe3txnih6bjIsqniSB9OXEtgPYzIQ1d+UqNhbyBzAFT/CHZMguBI4td1dsVpBPKmqwOASoJVLjo7r0Iu8TLRctEXoxYg2TV6gRt/3RhlAo0RyJUDTIUKyqISbQupmfyYv3EcOSYdAIxjt0N/e5HxJVgk0UcSJNQhLbihjvAAX4FTb3SHU6PHyno1VUZhh9w03EC4XkT3CON6qRs10bS9XKCsloOfbfp/8KEOda/72AxOjqN9Z1l7iyG/Priv60RwbbWqKmCe/f70OjUq/fk8SuTL6IA3Rs0o1YAtz2npuNAZm+NgTv5Tadje3nwmTbzXsfgaQwQQQQ==",
+        "SigningCertUrl":
+          "https://sns.ap-southeast-2.amazonaws.com/SimpleNotificationService-ac565b8b1a6c5d002d285f9598aa1d9b.pem",
+        "UnsubscribeUrl":
+          "https://sns.ap-southeast-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-southeast-2:371488795685:file-management-alarm-notification:96599c3e-2110-40bd-b707-359df18e169e",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
